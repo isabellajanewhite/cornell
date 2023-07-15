@@ -1,0 +1,118 @@
+# import relevant libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Q1 Part A
+# read data reviews and restaurants
+reviews_df =
+pd.read_csv('/Users/isabellawhite/Desktop/Cornell/Python/reviews.csv')
+restaurant_df =
+pd.read_csv('/Users/isabellawhite/Desktop/Cornell/Python/restaurants.c
+sv')
+#merge dataframes
+reviews_and_resturants_df = pd.merge(reviews_df, restaurant_df,
+how='left', on='business_id')
+#create new dataframe
+subway_df =
+reviews_and_resturants_df[['name','state','stars','date']].copy()
+df1 = subway_df[subway_df.name == 'Subway']
+date = pd.to_datetime(df1.loc[:,('date')])
+df2 = df1.groupby(date.dt.to_period('Y')).mean()
+df2 = df2.resample('Y').asfreq().fillna(0)
+df2.plot(y='stars', kind='bar') plt.title('Average Subway Rating Over Time') plt.xlabel('Date')
+plt.ylabel('Average Rating')
+plt.show()
+ In [30]:
+# Part B
+sns.lineplot(data=df1,
+               x='state',
+               y='stars',
+               palette='dark'
+               )
+plt.title('Average Rating Vs State') plt.xlabel('State') plt.ylabel('Average Rating') plt.show()
+
+
+# Q2 Part A
+# average reviews for Subway print("Subway Average Rating and SD:") print(df1['stars'].mean()) print(df1['stars'].std())
+# average reviews for Arby's
+arbys_df = subway_df[subway_df.name == "Arby's"] print("Arby's Average Rating and SD:") print(arbys_df['stars'].mean()) print(arbys_df['stars'].std())
+# average reviews for Jimmy John's
+jj_df = subway_df[subway_df.name == "Jimmy John's"] print("Jimmy John's Average Rating and SD:") print(jj_df['stars'].mean()) print(jj_df['stars'].std())
+Subway Average Rating and SD: 2.569417609715705 1.6397104388718355
+Arby's Average Rating and SD: 2.7429871114480666 1.6267566974323653
+Jimmy John's Average Rating and SD:
+
+2.8890853966649823
+1.61151941240623
+
+# Q3
+# Part A
+# Categorize restaurants as national or local
+national = restaurant_df.groupby('name')['city'].count() > 50 national = national.to_frame().reset_index()
+national.columns = ['name','national']
+local = restaurant_df.groupby('name')['city'].count() == 1
+local = local.to_frame().reset_index()
+local.columns = ['name','local']
+# merge columns
+national_and_local = national.merge(local, how='inner', on='name') restaurant_new = restaurant_df.merge(national_and_local, how='inner', on='name')
+cat_df = reviews_df.merge(restaurant_new, how='left',on='business_id').reset_index() cat_df.drop(columns=['Unnamed: 0_x','Unnamed: 0_y', 'index'], inplace=True)
+# Create scope field to designate National, Local, and Other cat_df.loc[cat_df['national'] == True, 'chain_scope'] = 'National' cat_df.loc[cat_df['local'] == True, 'chain_scope'] = 'Local' cat_df['chain_scope'] = cat_df['chain_scope'].fillna(value='Other')
+# Compute averages
+chart = cat_df.groupby('chain_scope')
+['stars'].mean().to_frame().reset_index()
+chart.columns = ['chain_scope', 'average_rating']
+# Bar chart design
+sns.barplot(data=chart[(chart['chain_scope']=='Local') |
+(chart['chain_scope']=='National')],
+           x='chain_scope',
+           y='average_rating',
+           palette='dark'
+           )
+plt.title('Average Rating Vs Chain Size') plt.xlabel('Restaurant Chain Size') plt.ylabel('Average Rating')
+plt.show()
+
+# Part B
+# Dataframe with City Counts and Average Ratings per Restaurant
+x = restaurant_df.groupby('name') ['city'].count().to_frame().reset_index()
+y = cat_df.groupby('name')['stars'].mean().to_frame().reset_index() scatter = x.merge(y, how='inner', on='name')
+# Relationship between average rating and resturant size sns.scatterplot(data=scatter,
+               x='city',
+               y='stars',
+               palette='dark'
+               )
+plt.title('Average Rating Vs Resturant Chain Size') plt.xlabel('Restaurant Chain Size') plt.ylabel('Average Rating')
+plt.show()
+
+# Q4
+# Part A
+# Dataframe with Review Counts and Average Ratings x = reviews_df.groupby('business_id') ['review_id'].count().to_frame().reset_index()
+y = cat_df.groupby('business_id') ['stars'].mean().to_frame().reset_index()
+scatter = x.merge(y, how='inner', on='business_id')
+# Relationship between average rating and review count sns.scatterplot(data=scatter,
+               x='review_id',
+               y='stars',
+               palette='dark'
+               )
+plt.title('Average Rating Vs Count of Rating') plt.xlabel('Count of Rating') plt.ylabel('Average Rating')
+plt.show()
+
+# Part B
+date = pd.to_datetime(reviews_df.loc[:,('date')])
+df4 = reviews_df.groupby(date.dt.to_period('Y')).count()
+df4 = df4.resample('Y').asfreq().fillna(0)
+df4.plot(y='stars', kind='bar')
+plt.title('Count of Rating Over Time')
+plt.xlabel('Date')
+plt.ylabel('Count of Rating')
+plt.show()
+
+# Part B cont.
+date = pd.to_datetime(reviews_df.loc[:,('date')])
+df4 = reviews_df.groupby(date.dt.to_period('Y')).mean()
+df4 = df4.resample('Y').asfreq().fillna(0)
+df4.plot(y='stars', kind='bar')
+plt.title('Average Rating Over Time')
+plt.xlabel('Date')
+plt.ylabel('Average Rating')
+plt.show()
