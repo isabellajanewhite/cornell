@@ -1,0 +1,160 @@
+"""
+The following script is designed to resolve the following business problem:
+Your business analyst forecasts that the demand for TwoPlus Earbuds X will be normally distributed with mean 150 and standard deviation 20.
+The total cost of manufacturing and logistics for each unit is $28.50 and you sell the earbuds at a retail price of $150.00.
+Any earbuds not sold within one month need to be disposed of in an environmentally sustainable way, which will cost the company $8.50 per unit.
+You face the following dilemma:
+-If you manufacture too many, you may not sell all of them and cause a loss of $37 (the sum of manufacturing
+and logistics and disposal costs: $28.50 + $8.50) for each earbud left unsold.
+-If you manufacture too little, you may not have enough for all customers and forego
+a profit of $121.50 (the difference of the retail price and the cost: $150 – $28.50) for each customer leaving the store without the earbuds.
+You want to know what the optimal number of TwoPlus Earbuds Xs is to manufacture.
+Authors: Dylan Juarez, Ashley Lucia de Hechavarria, Kevin A. Kavalackal, Isabella White Date: 11/12/2022
+"""
+# Import relevant libraries import numpy as np
+# Create earbuds_to_manufacture function
+def earbuds_to_manufacture(unit_price, retail_price, cost_of_disposing, number_of_earbuds_manufactured):
+"""
+Calculates the mean and standard deviation of a list of potential profits based on normally distributed forecasted demand for TwoPlus Earbuds X.
+Examples:
+If the earbuds_to_manufacture function has the following arguements: (1) unit_price = 28.50,
+(2) retail_price = 150.00,
+(3) cost_of_disposing = 8.50,
+(4) number_of_earbuds_manufactured = 150 earbuds_to_manufacture(28.50, 150.00, 8.50, 150) returns [17249.16, 2420.18]
+If the earbuds_to_manufacture function has the following arguements: (1) unit_price = 28.50,
+(2) retail_price = 150.00,
+(3) cost_of_disposing = 8.50,
+(4) number_of_earbuds_manufactured = 162 earbuds_to_manufacture(28.50, 150.00, 8.50, 162) returns [17246.7, 2379.13]
+Returns: mean and standard deviation of potential profits based on forecasted demand for TwoPlus Earbuds X in type list class
+Parameter: unit_price
+Definition: the total cost of logistics and manufacturing for each unit Precondition: unit_price is a float or int
+Parameter: retail_price
+Definition: cost paid for earbuds at retail stores Precondition: retail price is a float or int
+Parameter: cost_of_disposing
+Defintion: cost paid by company for earbuds to be disposed of in an environmentally sustainable way Precondition: cost_of_disposing is a float or int
+Parameter: number_of_earbuds_manufactured
+Definition: the total number of earbuds the company decides to manufacturer Precondition: number_of_earbuds_manufactured is an int
+"""
+## Part 1: Determine possible demand
+### Draw random samples from a normal distribution np.random.seed(42)
+demands = np.random.normal(150, 20, 1000) demands = demands.tolist()
+### Convert elements of list_1 into integers for i in range(0, len(demands)):
+demands[i] = int(demands[i])
+## Part 2: Determine profits for a given number of earbuds manufactured at each index
+### Ascertain sales for a given number of earbuds manufactured at each index sales = [None]*len(demands)
+for i in range(0, len(demands)):
+if demands[i] > number_of_earbuds_manufactured: sales[i] = number_of_earbuds_manufactured
+else:
+sales[i] = demands[i]
+### Calculate revenue for a given number of earbuds manufactured at each index revenues = [None]*len(sales)
+for i in range (0, len(sales)):
+
+revenues[i] = sales[i] * retail_price
+### Determine manufacturing_cost
+manufacturing_cost = unit_price * number_of_earbuds_manufactured manufacturing_cost_list = [None]*len(sales)
+for i in range(0, len(sales)):
+manufacturing_cost_list[i] = manufacturing_cost
+### Determine disposal_cost leftovers = [None]*len(demands) for i in range(0, len(demands)):
+if demands[i] > number_of_earbuds_manufactured: leftovers[i] = 0
+else:
+leftovers[i] = (number_of_earbuds_manufactured - demands[i]) * cost_of_disposing
+### Calculate profit for a given number of earbuds manufactured at each index profits = [None]*len(revenues)
+for i in range(0, len(revenues)):
+profits[i] = revenues[i] - manufacturing_cost_list[i] - leftovers[i] ## Part 3: Compute mean and standard deviation of profit
+### Calculate average profit average_profit = np.mean(profits)
+### Calculate standard deviation of profit standard_deviation_profit = np.std(profits)
+return [round(average_profit, 2), round(standard_deviation_profit, 2)]
+# Function for bonus Question
+def earbuds_to_manufacture_uniform_bonus(unit_price, retail_price, cost_of_disposing, number_of_earbuds_manufactured):
+"""
+Calculates the mean and standard deviation of a list of potential profits based on uniformly distributed forecasted demand for TwoPlus Earbuds X.
+Examples:
+If the earbuds_to_manufacture_uniform_bonus function has the following arguements: (1) unit_price = 28.50,
+(2) retail_price = 150.00,
+(3) cost_of_disposing = 8.50,
+(4) number_of_earbuds_manufactured = 150 earbuds_to_manufacture_uniform_bonus(28.50, 150.00, 8.50, 150) returns [16305.41, 2523.69]
+
+If the earbuds_to_manufacture_uniform_bonus function has the following arguements: (1) unit_price = 28.50,
+(2) retail_price = 150.00,
+(3) cost_of_disposing = 8.50,
+(4) number_of_earbuds_manufactured = 162 earbuds_to_manufacture(28.50, 150.00, 8.50, 162) returns [16699.24, 3225.81]
+Returns: mean and standard deviation of potential profits based on forecasted demand for TwoPlus Earbuds X in type list class
+Parameter: unit_price
+Definition: the total cost of logistics and manufacturing for each unit Precondition: unit_price is a float or int
+Parameter: retail_price
+Definition: cost paid for earbuds at retail stores Precondition: retail price is a float or int
+Parameter: cost_of_disposing
+Defintion: cost paid by company for earbuds to be disposed of in an environmentally sustainable way Precondition: cost_of_disposing is a float or int
+Parameter: number_of_earbuds_manufactured
+Definition: the total number of earbuds the company decides to manufacturer Precondition: number_of_earbuds_manufactured is an int
+"""
+## Part 1: Determine possible demand
+### Draw random samples from a normal distribution np.random.seed(44)
+demands = np.random.uniform(100, 200, 1000) demands = demands.tolist()
+### Convert elements of list_1 into integers for i in range(0, len(demands)):
+demands[i] = int(demands[i])
+## Part 2: Determine profits for a given number of earbuds manufactured at each index
+### Ascertain sales for a given number of earbuds manufactured at each index sales = [None]*len(demands)
+for i in range(0, len(demands)):
+if demands[i] > number_of_earbuds_manufactured: sales[i] = number_of_earbuds_manufactured
+else:
+
+sales[i] = demands[i]
+### Calculate revenue for a given number of earbuds manufactured at each index revenues = [None]*len(sales)
+for i in range (0, len(sales)):
+revenues[i] = sales[i] * retail_price
+### Determine manufacturing_cost
+manufacturing_cost = unit_price * number_of_earbuds_manufactured manufacturing_cost_list = [None]*len(sales)
+for i in range(0, len(sales)):
+manufacturing_cost_list[i] = manufacturing_cost
+### Determine disposal_cost leftovers = [None]*len(demands) for i in range(0, len(demands)):
+if demands[i] > number_of_earbuds_manufactured: leftovers[i] = 0
+else:
+leftovers[i] = (number_of_earbuds_manufactured - demands[i]) * cost_of_disposing
+### Calculate profit for a given number of earbuds manufactured at each index profits = [None]*len(revenues)
+for i in range(0, len(revenues)):
+profits[i] = revenues[i] - manufacturing_cost_list[i] - leftovers[i] ## Part 3: Compute mean and standard deviation of profit
+### Calculate average profit average_profit = np.mean(profits)
+### Calculate standard deviation of profit standard_deviation_profit = np.std(profits)
+return [round(average_profit, 2), round(standard_deviation_profit, 2)]
+# Question 1: Decide number of earbuds to manufacture profits = []
+standard_deviations = []
+manufactured_earbuds_list = []
+for num_manufactured_earbuds in range(0, 1001): manufactured_earbuds_list.append(num_manufactured_earbuds) profit = earbuds_to_manufacture(unit_price = 28.50,
+retail_price = 150.00,
+cost_of_disposing = 8.50,
+number_of_earbuds_manufactured =num_manufactured_earbuds)[0]
+
+standard_deviation = earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00,
+cost_of_disposing = 8.50,
+number_of_earbuds_manufactured =num_manufactured_earbuds)[1] profits.append(profit)
+standard_deviations.append(standard_deviation)
+# Determine max profit and find associated number of manufactured earbuds print("\n")
+print("Question 1 Solution \n")
+print("Max Profit:", round(max(profits), 2))
+print("Standard Deviation Associated with this Max Profit:", standard_deviations[profits.index(17249.16)]) print("Associated Number of Manufactured Earbuds:", manufactured_earbuds_list[profits.index(17249.16)],"\n")
+# Question 2: Decide number of earbuds to manufacturer given a 50% chance of the government imposing additional taxes on the disposal of electronic waste
+weighted_average_profits = []
+weighted_average_standard_deviations = []
+manufactured_earbuds_list_2 = []
+for num_manufactured_earbuds in range(0, 1001): manufactured_earbuds_list_2.append(num_manufactured_earbuds)
+profits = 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50,
+number_of_earbuds_manufactured = num_manufactured_earbuds)[0]) + 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 17, number_of_earbuds_manufactured = num_manufactured_earbuds)[0])
+standard_deviations = 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50, number_of_earbuds_manufactured = num_manufactured_earbuds)[1]) + 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 17, number_of_earbuds_manufactured = num_manufactured_earbuds)[1])
+weighted_average_profits.append(profits) weighted_average_standard_deviations.append(standard_deviations)
+# Determine max profit and find associated number of manufactured earbuds
+print("Question 2 Solution \n")
+print("Max Profit:", round(max(weighted_average_profits), 2))
+print("Standard Deviation Associated with this Max Profit:", weighted_average_standard_deviations[weighted_average_profits.index(17181.370000000003)]) print("Associated Number of Manufactured Earbuds:", manufactured_earbuds_list_2[weighted_average_profits. index(17181.370000000003)])
+# Question 4: bonus
+bonus_profits = [] bonus_standard_deviations = [] bonus_manufactured_earbuds_list = []
+for num_manufactured_earbuds in range(0, 1001): bonus_manufactured_earbuds_list.append(num_manufactured_earbuds)
+
+profits_bonus = 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50, number_of_earbuds_manufactured =num_manufactured_earbuds)[0]) + 0.50 * (earbuds_to_manufacture_uniform_bonus(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50, number_of_earbuds_manufactured =num_manufactured_earbuds)[0])
+standard_deviations_bonus = 0.50 * (earbuds_to_manufacture(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50, number_of_earbuds_manufactured =num_manufactured_earbuds)[1]) + 0.50 * (earbuds_to_manufacture_uniform_bonus(unit_price = 28.50, retail_price = 150.00, cost_of_disposing = 8.50, number_of_earbuds_manufactured =num_manufactured_earbuds)[1])
+bonus_profits.append(profits_bonus) bonus_standard_deviations.append(standard_deviations_bonus)
+# Determine max profit and find associated number of manufactured earbuds print("\n")
+print("Question 4 Solution \n")
+print("Max Profit:", max(bonus_profits))
+print("Standard Deviation Associated with this Max Profit:", bonus_standard_deviations[bonus_profits.index(17021. 15)])
+print("Associated Number of Manufactured Earbuds:", bonus_manufactured_earbuds_list[bonus_profits. index(17021.15)])
