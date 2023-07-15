@@ -1,0 +1,141 @@
+"""
+A module to demonstrate debugging with while-loops.
+
+This module contains several functions with bugs in it.  You are to
+find and remove the bugs using the techniques introduced in the video.
+
+Author: Walker M. White
+Date: July 30, 2019
+"""
+import random
+
+
+def flips():
+    """
+    Returns the number of coin flips until seeing tails.
+    
+    Keeps flipping a coin ('h' for heads. 't' for tails).  It stops once it sees the 
+    first tails, returning the number of heads.
+    """
+    counter = 0
+    going = True
+
+    
+    while going:
+        flip = random.choice('ht')
+        
+        if flip == 'h':
+            counter = counter+1
+        else:
+            going = False 
+    
+    return counter
+
+
+def partition(s):
+    """
+    Returns a tuple containing the vowels in s and the consonants in s.
+    
+    Vowels are defined to be the letters 'a', 'e', 'i', 'o', and 'u'.  This function
+    returns a tuple of two elements, the vowels in s and the the consonants in s.
+    The vowels and consonants are presented in the same order that they occur in s,
+    duplicates included.
+    
+    Examples:
+        partition('hello') returns ('eo','hll')
+        partition('superstar') returns ('uea','sprstr')
+        partition('scary') returns ('a','scry')
+        partition('a') returns ('a','')
+        partition('k') returns ('','k')
+    
+    Parameter s: The string to partition
+    Precondition: s is nonempty string of only lowercase letters
+    """
+    # TWO accumulators
+    left  = ''
+    right = ''
+    pos = 0
+
+    while pos < len(s):
+        letter = s[pos]
+        if letter in 'aeiou':
+            left = left+letter
+            pos = pos+1
+        else:
+            right = right+letter
+            pos = pos+1
+
+    return (left,right)
+
+------------------------
+
+"""
+Module with for-loops that loop over positions.
+
+Author: Isabella White
+Date: 10/16/22
+"""
+
+
+def skip(s,n):
+    """
+    Returns a copy of s, only including positions that are multiples of n
+    
+    A position is a multiple of n if pos % n == 0.
+    
+    Examples:
+        skip('hello world',1) returns 'hello world'
+        skip('hello world',2) returns 'hlowrd'
+        skip('hello world',3) returns 'hlwl'
+        skip('hello world',4) returns 'hor'
+    
+    Parameter s: the string to copy
+    Precondition: s is a nonempty string
+    
+    Parameter n: the letter positions to accept
+    Precondition: n is an int > 0
+    """
+    # You must use a while-loop, not a for-loop
+    first = ""
+    second = ""
+    pos = 0
+    while pos < len(s):
+        if pos % n == 0:
+            first = first + s[pos]
+            pos = pos + 1
+        else:
+            second = second + s[pos]
+            pos = pos + 1
+    return first
+    
+
+def fixed_points(tup):
+    """
+    Returns a copy of tup, including only the "fixed points".
+    
+    A fixed point of a tuple is an element that is equal to its position in the tuple.
+    For example 0 and 2 are fixed points of (0,3,2).  The fixed points are returned in
+    the order that they appear in the tuple.
+    
+    Examples:
+        fixed_points((0,3,2)) returns (0,2)
+        fixed_points((0,1,2)) returns (0,1,2)
+        fixed_points((2,0,1)) returns ()
+    
+    Parameter tup: the tuple to copy
+    Precondition: tup is a tuple of ints
+    """
+    # You must use a while-loop, not a for-loop
+    first = ()
+    second = ()
+    pos = 0
+    while pos < len(tup):
+        if pos == tup[pos]:
+            first = first + (tup[pos],)
+            pos = pos + 1
+        else:
+            second = second + (tup[pos],)
+            pos = pos + 1
+    return first
+    
+    pass
